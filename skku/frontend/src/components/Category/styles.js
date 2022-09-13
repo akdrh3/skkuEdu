@@ -7,6 +7,7 @@ export const ContainerTest = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
+  안녕하세요 푸시 되나 확인중 삐빕
 `;
 
 export const Submenu = styled.div`
