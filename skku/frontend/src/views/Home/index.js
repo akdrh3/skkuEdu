@@ -15,6 +15,9 @@ import background from "../../assets/images/mainbackground.png";
 import background2 from "../../assets/images/mainbackground2.png";
 import background3 from "../../assets/images/mainbackground3.png";
 
+import { SocketContext } from "../../api/logics"
+import { useContext, useEffect } from "react";
+
 const cardData = [
   {
     imgUrl:
@@ -40,6 +43,11 @@ const cardData = [
 ];
 
 const Home = () => {
+  const { journal, book, journalState, bookState, journalPage,
+    bookPage, journalContent, bookContent, JCState, BCState,
+    getJournalBoard, getBookBoard, getJournalBoardPage, getBookBoardPage,
+    getJournalContent, getBookContent } = useContext(SocketContext);
+
   return (
     <Main>
       <Section background={background}>
