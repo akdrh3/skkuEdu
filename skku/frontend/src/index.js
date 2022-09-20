@@ -6,10 +6,14 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "normalize.css";
 import GlobalStyle from "./globalStyles";
 
+import { ContextProvider } from "./api/logics"
+
 ReactDOM.render(
-  <Router>
-    <GlobalStyle />
-    <App />
-  </Router>,
+  <ContextProvider>
+    <Router>
+      <GlobalStyle />
+      <App />
+    </Router>
+  </ContextProvider>,
   document.getElementById("root")
 );
