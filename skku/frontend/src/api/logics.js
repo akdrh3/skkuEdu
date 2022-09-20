@@ -40,8 +40,9 @@ const ContextProvider = ({ children }) => {
         setBookState(0);
         axios.get(`${API_URL}/book`)
         .then((response) => {
-            if (response.data) {
 
+            if (response.data) {
+                console.log(response.data[0]);
                 if (response.data.pageNum) {
                     setBookPage(response.data.pageNum);
                 } else setBookPage(-1);

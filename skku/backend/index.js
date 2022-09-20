@@ -7,8 +7,10 @@ const db = mysql.createConnection(dbconfig);
 const app = express();
 app.use(bodyParser.json());
 app.listen(3001);
+let cors = require("cors");
+app.use(cors());
 
-//database connection error
+//database connection error throwing
 db.connect((err) => {
     if(!err) {
         console.log('DB Connected.');
@@ -24,8 +26,7 @@ app.get('/journal',(req, res) => {
             console.log('ERROR : '+ JSON.stringify(err));
             return;
         } 
-
-        console.log('DATA : ' + data);
+        console.log('journal : ' + data);
         res.send(
             data
         );
@@ -39,8 +40,7 @@ app.get('/book',(req, res) => {
             console.log('ERROR : '+ JSON.stringify(err));
             return;
         }
-
-        console.log('DATA : ' + data);
+        //console.log('book : ' + JSON.stringify(data));
         res.send(
             data
         );
@@ -49,9 +49,6 @@ app.get('/book',(req, res) => {
 });
 
 
-
-
-
 app.get('/journal_with_pagenum',(req, res) => {
     
     let pageNum = [req.query.pageNum*10,req.query.pageNum*10+10];
@@ -61,143 +58,64 @@ app.get('/journal_with_pagenum',(req, res) => {
             res.send(err);
             return;
         }
-
-        if (data && data.length === 0) {
-            res.send({
-                success: false,
-                msg: 'Employee not found.'
-            });
-            return;
-        }
-
-        res.send({
-            success: true,
-            data: data
-        });
+        console.log('journal_with_pagenum : ' + data);
+        res.send(
+            data
+        );
         return;
 
     });
 });
 
-//book 받아오기
-app.get('/journal_with_pagenum',(req, res) => {
+
+app.get('/book_with_pagenum',(req, res) => {
     
     let pageNum = [req.query.pageNum*10,req.query.pageNum*10+10];
     console.log(req.query);
-    db.query('SELECT * FROM journal WHERE id BETWEEN ? AND ?', pageNum, (err, data, field) => {
+    db.query('SELECT * FROM book WHERE id BETWEEN ? AND ?', pageNum, (err, data, field) => {
         if (err) {
             res.send(err);
             return;
         }
-
-        if (data && data.length === 0) {
-            res.send({
-                success: false,
-                msg: 'Employee not found.'
-            });
-            return;
-        }
-
-        res.send({
-            success: true,
-            data: data
-        });
+        console.log("book_with_pagenum : "+data);
+        res.send(
+            data
+        );
         return;
 
     });
 });
 
-
-
-app.post('/employee',(req, res) => {
-    let request = req.body;
-    let cols = [request.empCode, request.name, request.salary];
-    db.query('INSERT INTO employees (empCode, name, salary, created_at) VALUES (?, ?, ?, now())', cols, (err, data, field) => {
-        if(err) {
-            console.log('ERROR : '+ JSON.stringify(err));
-            return;
-        }
-
-        if(data && data.length === 0) {
-            res.send({
-                success: false,
-                msg: 'Employee Created Unsuccessfully.'
-            });
-            return;
-        }
-        // console.log('DATA : ' + JSON.stringify(data));
-        res.send({
-            success: true,
-            data: data.insertId,
-            msg: 'Employee Created Successfully.'
-        });
-        return;
-    });
-});
-
-app.put('/employee/:id',(req, res) => {
-    let request = req.body;
-    let cols = [req.params.id];
+app.get('/journal_id',(req, res) => {
     
-    db.query('SELECT * FROM employees WHERE id = ? LIMIT 1', cols, (err, data, field) => {
+
+    console.log(req.query);
+    db.query('SELECT file FROM journal WHERE id = ?', req.query.id, (err, data, field) => {
         if (err) {
             res.send(err);
             return;
         }
-
-        if (data && data.length === 0) {
-            res.send({
-                success: false,
-                msg: 'Employee not found.'
-            });
-            return;
-        } else {
-            cols = [request.empCode,request.name,request.salary,req.params.id];
-            db.query('UPDATE employees SET empCode = ?, name = ?, salary = ?, updated_at = now() WHERE id = ?', cols, (err, data) => {
-                if (err) {
-                    res.send(err);
-                    return;
-                }
-
-                res.send({
-                    success: true,
-                    data: data,
-                    msg: 'Employee Updated Success'
-                });
-                return;
-
-            });
-        }
+        console.log(data[0].file);
+        res.download(
+            data[0].file
+        );
+        return;
 
     });
 });
 
-app.delete('/employee/:id', (req, res) => {
-    let cols = [req.params.id];
-    db.query('SELECT * FROM employees WHERE id = ? LIMIT 1', cols, (err, data, field) => {
+app.get('/book_id',(req, res) => {
+    console.log(req.query);
+    db.query('SELECT file FROM book WHERE id = ?', req.query.id, (err, data, field) => {
         if (err) {
             res.send(err);
             return;
         }
-        if (data && data.length === 1) {
-            db.query('DELETE FROM employees WHERE id = ?', cols, (err, data, field) => {
-                if(err) {
-                    res.send(err);
-                    return;
-                }
-                res.send({
-                    success: true,
-                    msg: 'Deleted Successfully.'
-                });
-                return;
-            });
-        } else {
-            res.send({
-                success: false,
-                msg: 'Employee not found.'
-            });
-            return;
-        }        
-    });
+        console.log(data[0].file);
+        res.download(
+            data[0].file
+        );
+        return;
 
+    });
 });

@@ -47,7 +47,8 @@ const Home = () => {
     bookPage, journalContent, bookContent, JCState, BCState,
     getJournalBoard, getBookBoard, getJournalBoardPage, getBookBoardPage,
     getJournalContent, getBookContent } = useContext(SocketContext);
-
+    console.log(getBookBoard());
+    //console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
   return (
     <Main>
       <Section background={background}>
