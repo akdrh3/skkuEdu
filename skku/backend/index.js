@@ -87,8 +87,6 @@ app.get('/book_with_pagenum',(req, res) => {
 });
 
 app.get('/journal_id',(req, res) => {
-    
-
     console.log(req.query);
     db.query('SELECT file FROM journal WHERE id = ?', req.query.id, (err, data, field) => {
         if (err) {
